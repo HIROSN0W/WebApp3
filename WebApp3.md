@@ -119,6 +119,62 @@ snct/building1/2F/room1204/humi 70
 ```
 環境構築4: 作成したシステムの概略、動作確認の方法と結果
 課題4: 動作確認の方法と結果
+
+```
+<mqtt_get>
+
+GET / HTTP/1.1
+Host: localhost:8080
+Connection: Upgrade
+Pragma: no-cache
+Cache-Control: no-cache
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0
+Upgrade: websocket
+Origin: http://localhost:3000
+Sec-WebSocket-Version: 13
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: ja,en;q=0.9,en-GB;q=0.8,en-US;q=0.7
+Sec-WebSocket-Key: xw+cLUHKv1BRP0f01FbhDg==
+Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits
+Sec-WebSocket-Protocol: mqtt
+
+HTTP/1.1 101 Switching Protocols
+Upgrade: WebSocket
+Connection: Upgrade
+Sec-WebSocket-Accept: hLXiH03q3q4XAJCgNHG5vz0QYp4=
+Sec-WebSocket-Protocol: mqtt
+```
+
+
+```
+<mptt_Follow TCP_stream>
+GET / HTTP/1.1
+Host: localhost:8080
+Connection: Upgrade
+Pragma: no-cache
+Cache-Control: no-cache
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0
+Upgrade: websocket
+Origin: http://localhost:3000
+Sec-WebSocket-Version: 13
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: ja,en;q=0.9,en-GB;q=0.8,en-US;q=0.7
+Sec-WebSocket-Key: xw+cLUHKv1BRP0f01FbhDg==
+Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits
+Sec-WebSocket-Protocol: mqtt
+
+HTTP/1.1 101 Switching Protocols
+Upgrade: WebSocket
+Connection: Upgrade
+Sec-WebSocket-Accept: hLXiH03q3q4XAJCgNHG5vz0QYp4=
+Sec-WebSocket-Protocol: mqtt
+
+....K...K......VK.......~...f...z...{...{.......~...z...K...;...9.......(........ .......Q...Q...2.u.`.`.#.u.c.?.........~..0...chat1/thread2/user3{"nickname":"hiro","postmessage":"hello","posttime":"Mon Nov 11 2024 15:59:34 GMT+0900 (...............)"}.~..0....chat1/thread2/user3{"nickname":"taro","postmessage":"ohayo-","posttime":"Mon Nov 11 2024 15:59:36 GMT+0900 (...............)"}
+```
+
+2379[byte]
+
+
 理解したこと、理解できていないこと
 
 ## 写真フォルダー
@@ -134,7 +190,9 @@ snct/building1/2F/room1204/humi 70
 
 ![課題２](image-7.png)
 
+![課題４](image-9.png)
 
+![](image-10.png)
 ```
 UYII8ceNiICh
 ```
