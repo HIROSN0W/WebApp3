@@ -192,7 +192,8 @@ Sec-WebSocket-Protocol: mqtt
 
 ![課題４](image-9.png)
 
-![](image-10.png)
+![課題４](image-10.png)
+![課題４](image-11.png)
 ```
 UYII8ceNiICh
 ```
