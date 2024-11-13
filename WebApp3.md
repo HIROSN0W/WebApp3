@@ -21,14 +21,17 @@
 
 ## 環境構築1: 
 ### 作成したシステムの概略
-Formに入力したメッセージを表示するWebアプリの構築  
+> Formに入力したメッセージを表示するWebアプリの構築  
 *メッセージは永続化されない
 ### 動作確認の方法と結果
 
 
 <chromeの画像>
-![環境開発１](image.png)
+
+![環境開発１](image.png)  
+
 <edgeの画像>
+
 ![alt text](image-2.png)
 
 
@@ -55,7 +58,7 @@ Access-Control-Allow-Credentials: true
 Access-Control-Allow-Headers: access-control-allow-credentials, access-control-allow-origin, content-type
 Access-Control-Allow-Methods: DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT
 ```
-- **Access-Control-Request-Method**:送ろうとしている使用したいメソッド(POST)
+- **Access-Control-Request-Method**:送ろうとしている使用したいメソッド(POST)  
  <=> **Access-Control-Allow-Methods**:許可しているメソッド 
 
 - **Access-Control-Request-Headers**:送ろうとしているヘッダー  
@@ -69,6 +72,7 @@ Access-Control-Allow-Methods: DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT
 [参考](https://qiita.com/rudy39/items/cc70f3a2a494850f6028)
 
 <tsharkの様子>
+
 ![課題１](image-1.png)
 
 ```
@@ -77,7 +81,7 @@ Access-Control-Allow-Methods: DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT
 
 ## 環境構築2: 
 ### 作成したシステムの概略
-REST APIに変わり、WebSocketを用いてサーバ、クライアント間のデータ送受信を行う実装
+> REST APIに変わり、WebSocketを用いてサーバ、クライアント間のデータ送受信を行う実装
 ### 動作確認の方法と結果
 
 ![環境構築２](image-6.png)
@@ -108,6 +112,7 @@ Sec-WebSocket-Accept: 6NlBz+lpAyFsPqh+E+kJyM61qrc=
 - **Sec-WebSocket-Key**:特定のクライアントとのコネクションの確立を立証する為に使われる
 
 <tsharkの様子>
+
 ![alt text](image-8.png)
 
 ```
@@ -116,9 +121,28 @@ Sec-WebSocket-Accept: 6NlBz+lpAyFsPqh+E+kJyM61qrc=
 
 ## 環境構築3: 
 ### 作成したシステムの概略
+> mosquittoを使用し、WebSocketより、データ通信を軽くするように変更
+
 ### 動作確認の方法と結果
+
+< subscribe >
+```
+docker compose run --rm mqtt-sub mosquitto_sub  -u appuser -P UYII8ceNiICh -h mqtt-broker -t "#" -v
+test/d1/ 1
+```
+
+< publish >
+```
+codespace ➜ /workspaces/webapp3-HIROSN0W/src (main) $ docker compose run --rm mqtt-pub mosquitto_pub -u appuser -P UYII8ceNiICh -h mqtt-broker  -t test/d1/ -m "1"
+```
+
+上記のように表示されたため、mqtt-pubからbrokerへトピック付きのメッセージが送られ、subscribe側でそのメッセージを受信することができたことが確認された。
+
+
 ## 課題3: 
 ### 動作確認の方法と結果
+
+<全デバイスの温度(temp)を取得する>
 ```
 codespace ➜ /workspaces/webapp3-HIROSN0W/src (main) $ docker compose run --rm mqtt-sub mosquitto_sub  -u appuser -P UYII8ceNiICh -h mqtt-broker -t "+/+/+/+/temp" -v
 snct/building1/3F/room1305/temp 28
@@ -126,32 +150,36 @@ snct/building1/3F/room1301/temp 25
 snct/building1/2F/room1204/temp 24
 ```
 
+<全ての3Fの部屋の湿度(humi)を取得する>
 ```
 codespace ➜ /workspaces/webapp3-HIROSN0W/src (main) $ docker compose run --rm mqtt-sub mosquitto_sub  -u appuser -P UYII8ceNiICh -h mqtt-broker -t "+/+/+/+/humi" -v
 snct/building1/3F/room1305/humi 56
 snct/building1/3F/room1301/humi 65
 snct/building1/2F/room1204/humi 70
 ```
+
 ## 環境構築4: 
 ### 作成したシステムの概略
+> MQTT over WebSocketを使用し、WebブラウザをMQTTクライアントとしての利用
+
 ### 動作確認の方法と結果
+![環境構築4](image-11.png)
+
+上記の画像を確認するとMQTTを使用して、双方で送ったメッセージが双方のWebページで確認された。
+
 ## 課題4: 
 ### 動作確認の方法と結果
 
-```
-<mqtt_get>
+<mpttのストリーム内容(抜粋)>
 
+```
 GET / HTTP/1.1
 Host: localhost:8080
 Connection: Upgrade
 Pragma: no-cache
 Cache-Control: no-cache
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0
 Upgrade: websocket
 Origin: http://localhost:3000
-Sec-WebSocket-Version: 13
-Accept-Encoding: gzip, deflate, br, zstd
-Accept-Language: ja,en;q=0.9,en-GB;q=0.8,en-US;q=0.7
 Sec-WebSocket-Key: xw+cLUHKv1BRP0f01FbhDg==
 Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits
 Sec-WebSocket-Protocol: mqtt
@@ -162,52 +190,24 @@ Connection: Upgrade
 Sec-WebSocket-Accept: hLXiH03q3q4XAJCgNHG5vz0QYp4=
 Sec-WebSocket-Protocol: mqtt
 ```
+- **Upgrade: websocket** + **Connection: Upgrade**  
+ =>HTTPからWebSocketへのプロトコル切り替えを要求
+- **Sec-WebSocket-Protocol: mqtt**  
+ =>クライアントがプロトコルにMQTTに指定
+- **Sec-WebSocket-Protocol: mqtt**  
+ =>サーバーがWebSocket接続でMQTTプロトコルの使用の受け入れ
 
 
-```
-<mptt_Follow TCP_stream>
-GET / HTTP/1.1
-Host: localhost:8080
-Connection: Upgrade
-Pragma: no-cache
-Cache-Control: no-cache
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0
-Upgrade: websocket
-Origin: http://localhost:3000
-Sec-WebSocket-Version: 13
-Accept-Encoding: gzip, deflate, br, zstd
-Accept-Language: ja,en;q=0.9,en-GB;q=0.8,en-US;q=0.7
-Sec-WebSocket-Key: xw+cLUHKv1BRP0f01FbhDg==
-Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits
-Sec-WebSocket-Protocol: mqtt
-
-HTTP/1.1 101 Switching Protocols
-Upgrade: WebSocket
-Connection: Upgrade
-Sec-WebSocket-Accept: hLXiH03q3q4XAJCgNHG5vz0QYp4=
-Sec-WebSocket-Protocol: mqtt
-
-....K...K......VK.......~...f...z...{...{.......~...z...K...;...9.......(........ .......Q...Q...2.u.`.`.#.u.c.?.........~..0...chat1/thread2/user3{"nickname":"hiro","postmessage":"hello","posttime":"Mon Nov 11 2024 15:59:34 GMT+0900 (...............)"}.~..0....chat1/thread2/user3{"nickname":"taro","postmessage":"ohayo-","posttime":"Mon Nov 11 2024 15:59:36 GMT+0900 (...............)"}
-```
-
-2379[byte]
-
-
-## 理解したこと、理解できていないこと
-
-## 写真フォルダー
-
-![alt text](image-3.png)
-
-![alt text](image-5.png)
-
-
-![課題２](image-7.png)
+<tsharkの様子>
 
 ![課題４](image-9.png)
 
-![課題４](image-10.png)
-![課題４](image-11.png)
 ```
-UYII8ceNiICh
+パケット総数2379[byte]
 ```
+
+## 理解したこと、理解できていないこと
+
+WebSocketは、双方向通信を提供し、クライアントとサーバーがリアルタイムでデータを送受信するプロトコルで、MQTTは軽量で通信量が少ないプロトコルである、違いを理解することができた。
+また、リアルタイム性や、低通信量など必要にあわせてプロトコルを選定することの重要性を感じた。
+実際のXのような毎秒、大量のデータを受け取るようなSNSではどのようにしているか興味を持った。
